@@ -62,7 +62,7 @@ The public API intentionally separates orchestration from implementation. Compon
 ```python
 from boa_bigapi.context import BOAContext
 
-context = BOAContext.create(
+context = BOAContext(
     payload={"message": "hello"},
     metadata={"source": "api"},
 )
@@ -135,7 +135,7 @@ Created by `somsung46813-creator`.
 
 ## Repository
 
-urlBOA GitHub repositoryhttps://github.com/somsung46813-creator/boa-bigapi-framework
+https://github.com/somsung46813-creator/boa-bigapi-framework
 
 ---
 
