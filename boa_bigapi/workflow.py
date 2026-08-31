@@ -37,7 +37,11 @@ class CPUWorkflow(Workflow):
         context = data if isinstance(data, BOAContext) else BOAContext.create(data)
         current: Any = context
         for component in self.components:
-            current = component.process(current)
+            if isinstance(current, BOAContext):
+                result = component.process(current.payload)
+                current = current.replace(result)
+            else:
+                current = component.process(current)
         return current
 
 
