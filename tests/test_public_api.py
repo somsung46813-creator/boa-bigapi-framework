@@ -5,8 +5,8 @@ import pytest
 from boa_bigapi import (
     BOA,
     BOAContext,
-    CPUWorkflow,
     ComputeBackend,
+    CPUWorkflow,
     Prismatics,
     Transport,
     Workflow,
@@ -58,7 +58,7 @@ def test_cpu_workflow_chains_components():
 
 
 def test_cpu_workflow_rejects_invalid_component():
-    with pytest.raises(TypeError, match="process\(data\)"):
+    with pytest.raises(TypeError, match=r"process\(data\)"):
         CPUWorkflow().use(object())
 
 
