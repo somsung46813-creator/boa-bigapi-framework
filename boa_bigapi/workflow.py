@@ -3,22 +3,19 @@
 from abc import ABC, abstractmethod
 from typing import Any, Iterable
 
+from .context import BOAContext
+
 
 class Workflow(ABC):
     """Minimal contract shared by executable BOA workflows."""
 
     @abstractmethod
     def execute(self, data: Any) -> Any:
-        """Execute the workflow against input data."""
         raise NotImplementedError
 
 
 class CPUWorkflow(Workflow):
-    """Composable CPU pipeline facade.
-
-    Components are executed in registration order. Components may be existing
-    BOA BaseComponent instances or compatible objects exposing ``process``.
-    """
+    """Composable CPU pipeline using the canonical BOA context contract."""
 
     DEFAULT_PIPELINE = (
         "View", "Data", "Grid", "Controller", "Secret", "Session",
@@ -35,20 +32,21 @@ class CPUWorkflow(Workflow):
         return self
 
     def execute(self, data: Any) -> Any:
-        current = data
+        context = data if isinstance(data, BOAContext) else BOAContext(data)
         for component in self.components:
-            current = component.process(current)
-        return current
+            result = component.process(context.payload)
+            context = context.replace(result, stage=component.__class__.__name__)
+        return context
 
 
 class BOA:
-    """Top-level facade separating CPU workflows from compute backends."""
+    """Top-level facade separating workflow execution from compute backends."""
 
     def __init__(self, workflow: Workflow | None = None, backend: Any = None):
         self.workflow = workflow or CPUWorkflow()
         self.backend = backend
 
-    def execute(self, data: Any) -> Any:
+    def execute(self, data: Any) -> BOAContext | Any:
         return self.workflow.execute(data)
 
     def compute(self, operation: Any) -> Any:
