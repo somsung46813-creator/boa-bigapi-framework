@@ -6,6 +6,7 @@ Data visualization and presentation layer for the BOA framework.
 from typing import Any, Dict, List, Optional
 from core.base import BaseComponent
 import json
+from datetime import datetime
 
 
 class View(BaseComponent):
@@ -77,6 +78,3 @@ class View(BaseComponent):
             JSON representation of data
         """
         return json.dumps(data, indent=2)
-
-
-from datetime import datetime
