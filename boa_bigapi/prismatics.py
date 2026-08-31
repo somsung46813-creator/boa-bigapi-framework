@@ -1,12 +1,20 @@
 """Backend-neutral Prismatics operation facade."""
 
-from typing import Any
+from typing import Any, Protocol
+
+
+class ComputeBackend(Protocol):
+    """Minimal execution contract required by Prismatics."""
+
+    def execute(self, operations: list[tuple[str, Any]]) -> Any:
+        """Execute an ordered operation list."""
+        ...
 
 
 class Prismatics:
     """Compose pitch, roll, index and scatter operations for a backend."""
 
-    def __init__(self, backend: Any):
+    def __init__(self, backend: ComputeBackend | type[ComputeBackend]):
         self.backend = backend() if isinstance(backend, type) else backend
         self.operations: list[tuple[str, Any]] = []
 
@@ -27,4 +35,4 @@ class Prismatics:
         return self
 
     def compute(self) -> Any:
-        return self.backend.execute(self.operations)
+        return self.backend.execute(list(self.operations))
