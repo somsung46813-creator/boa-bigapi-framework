@@ -2,8 +2,10 @@
 
 import json
 import os
-from typing import Any, Dict, Optional
 from pathlib import Path
+from typing import Any, Dict, Optional
+
+from .config_validation import validate_config_value
 
 
 class Config:
@@ -47,23 +49,16 @@ class Config:
 
     @classmethod
     def to_dict(cls) -> Dict[str, Any]:
-        """Convert configuration to dictionary.
-        
-        Returns:
-            Dictionary representation of configuration
-        """
+        """Convert configuration to dictionary."""
         return {key: getattr(cls, key) for key in dir(cls) 
                 if not key.startswith('_') and key.isupper()}
 
     @classmethod
     def update(cls, config_dict: Dict[str, Any]) -> None:
-        """Update configuration from dictionary.
-        
-        Args:
-            config_dict: Dictionary with configuration values
-        """
+        """Update configuration from dictionary after validation."""
         for key, value in config_dict.items():
             if key.isupper():
+                validate_config_value(key, value)
                 setattr(cls, key, value)
 
 
@@ -71,67 +66,36 @@ class ConfigManager:
     """Manages configuration loading and management."""
 
     def __init__(self, config_file: Optional[str] = None):
-        """Initialize configuration manager.
-        
-        Args:
-            config_file: Path to configuration file (JSON format)
-        """
         self.config_file = config_file
         self.config = Config.to_dict()
         if config_file and os.path.exists(config_file):
             self.load_config(config_file)
 
     def load_config(self, config_file: str) -> None:
-        """Load configuration from JSON file.
-        
-        Args:
-            config_file: Path to configuration file
-        """
+        """Load configuration from JSON file."""
         try:
             with open(config_file, 'r') as f:
                 config_data = json.load(f)
-                self.config.update(config_data)
                 Config.update(config_data)
+                self.config.update(config_data)
         except Exception as e:
-            raise ValueError(f"Failed to load config file {config_file}: {e}")
+            raise ValueError(f"Failed to load config file {config_file}: {e}") from e
 
     def save_config(self, config_file: str) -> None:
-        """Save current configuration to JSON file.
-        
-        Args:
-            config_file: Path to save configuration to
-        """
+        """Save current configuration to JSON file."""
         Path(config_file).parent.mkdir(parents=True, exist_ok=True)
         with open(config_file, 'w') as f:
             json.dump(self.config, f, indent=2)
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Get configuration value.
-        
-        Args:
-            key: Configuration key
-            default: Default value if key not found
-            
-        Returns:
-            Configuration value
-        """
         return self.config.get(key, default)
 
     def set(self, key: str, value: Any) -> None:
-        """Set configuration value.
-        
-        Args:
-            key: Configuration key
-            value: Configuration value
-        """
-        self.config[key] = value
+        """Set configuration value after validation."""
         if key.isupper():
+            validate_config_value(key, value)
             setattr(Config, key, value)
+        self.config[key] = value
 
     def get_all(self) -> Dict[str, Any]:
-        """Get all configuration values.
-        
-        Returns:
-            Dictionary of all configuration
-        """
         return self.config.copy()
