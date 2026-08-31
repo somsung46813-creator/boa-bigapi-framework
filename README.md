@@ -170,7 +170,7 @@ Contributions welcome! Please ensure:
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
+GNU General Public Licensing 3.0 - see LICENSE file for details
 
 ## 👨‍💻 Author
 
