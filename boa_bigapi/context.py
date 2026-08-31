@@ -1,9 +1,9 @@
 """Canonical request/data contract for BOA pipeline execution."""
 
+import uuid
 from dataclasses import dataclass, field
 from time import time
 from typing import Any
-import uuid
 
 
 @dataclass
@@ -17,5 +17,9 @@ class BOAContext:
 
     def replace(self, payload: Any, **metadata: Any) -> "BOAContext":
         merged = {**self.metadata, **metadata}
-        return BOAContext(payload=payload, request_id=self.request_id,
-                          timestamp=self.timestamp, metadata=merged)
+        return BOAContext(
+            payload=payload,
+            request_id=self.request_id,
+            timestamp=self.timestamp,
+            metadata=merged,
+        )
