@@ -15,7 +15,13 @@ class BOAContext:
     timestamp: float = field(default_factory=time)
     metadata: dict[str, Any] = field(default_factory=dict)
 
+    @classmethod
+    def create(cls, payload: Any, metadata: dict[str, Any] | None = None) -> "BOAContext":
+        """Create a context envelope for a new workflow request."""
+        return cls(payload=payload, metadata=dict(metadata or {}))
+
     def replace(self, payload: Any, **metadata: Any) -> "BOAContext":
+        """Create a new context while preserving request identity and merging metadata."""
         merged = {**self.metadata, **metadata}
         return BOAContext(
             payload=payload,
