@@ -1,7 +1,8 @@
 """Framework-level workflow abstractions."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 from .context import BOAContext
 
@@ -11,11 +12,12 @@ class Workflow(ABC):
 
     @abstractmethod
     def execute(self, data: Any) -> Any:
+        """Execute the workflow against input data."""
         raise NotImplementedError
 
 
 class CPUWorkflow(Workflow):
-    """Composable CPU pipeline using the canonical BOA context contract."""
+    """Composable CPU pipeline facade."""
 
     DEFAULT_PIPELINE = (
         "View", "Data", "Grid", "Controller", "Secret", "Session",
@@ -32,21 +34,25 @@ class CPUWorkflow(Workflow):
         return self
 
     def execute(self, data: Any) -> Any:
-        context = data if isinstance(data, BOAContext) else BOAContext(data)
+        context = data if isinstance(data, BOAContext) else BOAContext.create(data)
+        current: Any = context
         for component in self.components:
-            result = component.process(context.payload)
-            context = context.replace(result, stage=component.__class__.__name__)
-        return context
+            if isinstance(current, BOAContext):
+                result = component.process(current.payload)
+                current = current.replace(result)
+            else:
+                current = component.process(current)
+        return current
 
 
 class BOA:
-    """Top-level facade separating workflow execution from compute backends."""
+    """Top-level facade separating CPU workflows from compute backends."""
 
     def __init__(self, workflow: Workflow | None = None, backend: Any = None):
         self.workflow = workflow or CPUWorkflow()
         self.backend = backend
 
-    def execute(self, data: Any) -> BOAContext | Any:
+    def execute(self, data: Any) -> Any:
         return self.workflow.execute(data)
 
     def compute(self, operation: Any) -> Any:

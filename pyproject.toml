@@ -21,6 +21,13 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
+exclude = [
+    "core/**",
+    "cpu_workflow/**",
+    "gpu_method/**",
+    "utils/**",
+    "examples/**",
+]
 
 [tool.mypy]
 python_version = "3.10"
