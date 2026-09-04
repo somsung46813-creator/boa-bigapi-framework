@@ -14,7 +14,7 @@ license = {file = "LICENSE"}
 dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.10"]
 
 [tool.setuptools.packages.find]
-include = ["boa_bigapi*"]
+include = ["boa_bigapi*", "core*", "cpu_workflow*", "gpu_method*", "utils*", "examples*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
