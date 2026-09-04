@@ -1,6 +1,6 @@
 # BOA (BIG O API) — Python Full-Stack Development Framework
 
-BOA is a Python framework for composing **CPU workflows** and **GPU Prismatics** behind a small, backend-neutral API. The foundation is designed for distributed processing, graphics workloads, transport abstractions, and incremental native acceleration.
+BOA is a Python framework for composing **CPU workflows** and **GPU Prismatics** behind a small, backend-neutral API. The foundation is designed for distributed processing, graphics workloads, tran...
 
 ## Architecture
 
@@ -86,6 +86,30 @@ result = (
     .compute()
 )
 ```
+
+## RGB Graphics — Golden Ratio Abstract
+
+An abstract wire-RGB graphic linked to the golden ratio and the Prismatics concept. The asset visualizes three radial lines in Red, Blue, and Green whose lengths are approximately in the ratio 1 : φ : φ² (φ ≈ 1.618).
+
+![RGB Golden Ratio](assets/rgb-golden-ratio.svg)
+
+Embed notes:
+- File: `assets/rgb-golden-ratio.svg`
+- Raw URL: https://raw.githubusercontent.com/somsung46813-creator/boa-bigapi-framework/main/assets/rgb-golden-ratio.svg
+- Purpose: visual reference for Prismatics (Pitch, Roll, Scatter) and a simple RGB wireframe to illustrate color-separated axes/angles.
+
+ASCII / wire labels (preserve for documentation or design notes):
+
+```
+RGB GRAPHICS
+
+Y        X       Z
+                                                                                                                               PITCH    ROLL    SCATTER
+                                                                                                                               MODEL    VIEW    PROJECTION
+                                                                                                                               RED      GREEN   BLUE
+```
+
+Caption: The three radial lines in the SVG represent axis/angle separation (visualized in RGB) and use golden-ratio-based lengths for an aesthetic proportional relationship. Use this image as a conceptual illustration in docs or examples of Prismatics.
 
 ## Installation
 
